@@ -15,7 +15,12 @@
   "author": "Kai Orozobekov",
   "license": "ISC",
   "devDependencies": {
+    "@types/node": "^20.14.8",
     "nodemon": "^3.1.4",
     "typescript": "^5.5.2"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "grammy": "^1.25.1"
   }
 }
