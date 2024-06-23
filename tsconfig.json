@@ -5,8 +5,8 @@
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "outDir": "build",
-    "rootDir": "./"
+    "outDir": "./build",
+    "rootDir": "./api"
   },
   "include": ["api/**/*"],
   "exclude": ["node_modules"]
