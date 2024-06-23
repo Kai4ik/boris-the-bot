@@ -1,0 +1,21 @@
+{
+  "name": "boris-the-bot",
+  "version": "1.0.0",
+  "description": "Boris is a lovely Telegram Bot, that assists me with some day-to-day tasks such as expense calculations, stock contribution calculations, managaing TG messages, etc.",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "ts-node api/boris-bot.ts",
+    "dev": "nodemon -x 'ts-node api/boris-bot.ts'"
+  },
+  "keywords": [
+    "telegram",
+    "bot"
+  ],
+  "author": "Kai Orozobekov",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.1.4",
+    "typescript": "^5.5.2"
+  }
+}
