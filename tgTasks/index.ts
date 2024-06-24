@@ -1,3 +1,3 @@
-import { handleRegularMessage } from "./handleRegularMessage";
+import { handleMessage } from "./handleMessage";
 
-export { handleRegularMessage };
+export { handleMessage };

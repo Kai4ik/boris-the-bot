@@ -24,8 +24,10 @@ const getTgMessageByID = async (
   return recordForUpdate;
 };
 
-export const handleRegularMessage = async (ctx: MyTgContext) => {
-  const message = ctx.message;
+export const handleMessage = async (ctx: MyTgContext, message_type: string) => {
+  const message =
+    message_type === "regularMessage" ? ctx.message : ctx.businessMessage;
+
   const messageId = message?.message_id;
   let isMessageReply = false;
 

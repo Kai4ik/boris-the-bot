@@ -1,6 +1,6 @@
-import { Bot, Context, webhookCallback } from "grammy";
+import { Bot, webhookCallback } from "grammy";
 import { hydrateFiles } from "@grammyjs/files";
-import { handleRegularMessage } from "../tgTasks";
+import { handleMessage } from "../tgTasks";
 import { MyTgContext } from "../types";
 import "dotenv/config";
 
@@ -16,8 +16,7 @@ bot.api.config.use(hydrateFiles(bot.token));
 
 const handleAllMessages = async (ctx: MyTgContext) => {
   const message_type = ctx.message ? "regularMessage" : "businessMessage";
-  if (message_type === "regularMessage") await handleRegularMessage(ctx);
-  else console.log("buiness");
+  await handleMessage(ctx, message_type);
 };
 
 bot.on("business_message", handleAllMessages);
