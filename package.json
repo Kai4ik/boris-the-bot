@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc",
     "start": "ts-node api/boris-bot.ts",
-    "dev": "nodemon -x 'ts-node api/boris-bot.ts'"
+    "dev": "nodemon api/boris-bot.ts"
   },
   "keywords": [
     "telegram",
@@ -20,7 +20,11 @@
     "typescript": "^5.5.2"
   },
   "dependencies": {
+    "@grammyjs/files": "^1.1.1",
+    "airtable": "^0.12.2",
     "dotenv": "^16.4.5",
-    "grammy": "^1.25.1"
+    "grammy": "^1.25.1",
+    "moment": "^2.30.1",
+    "moment-timezone": "^0.5.45"
   }
 }
