@@ -1,7 +1,4 @@
-import {
-  financeCategoriesTable,
-  financesTable,
-  tgMessagesTable,
-} from "./airtable";
+import { financeCategoriesTable, financesTable } from "./airtable";
+import { supabaseClient } from "./supabase";
 
-export { financeCategoriesTable, financesTable, tgMessagesTable };
+export { financeCategoriesTable, financesTable, supabaseClient };

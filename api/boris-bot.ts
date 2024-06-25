@@ -1,6 +1,6 @@
 import { Bot, webhookCallback } from "grammy";
 import { hydrateFiles } from "@grammyjs/files";
-import { handleMessage } from "../tgTasks";
+import { handleMessage, handleEditedMessage } from "../tgTasks";
 import { MyTgContext } from "../types";
 import "dotenv/config";
 
@@ -19,10 +19,16 @@ const handleAllMessages = async (ctx: MyTgContext) => {
   await handleMessage(ctx, message_type);
 };
 
+const handleAllEditedMessages = async (ctx: MyTgContext) => {
+  const message_type = ctx.editedMessage ? "regularMessage" : "businessMessage";
+  await handleEditedMessage(ctx, message_type);
+};
+
 bot.on("business_message", handleAllMessages);
 bot.on("message", handleAllMessages);
-bot.on("edited_business_message", handleAllMessages);
-bot.on("edited_message", handleAllMessages);
+bot.on("edited_business_message", handleAllEditedMessages);
+bot.on("edited_message", handleAllEditedMessages);
 
 // bot.start();
+
 export default webhookCallback(bot, "https");

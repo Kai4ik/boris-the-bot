@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc",
     "start": "ts-node api/boris-bot.ts",
-    "dev": "nodemon api/boris-bot.ts"
+    "dev": "set NODE_ENV=dev && nodemon api/boris-bot.ts"
   },
   "keywords": [
     "telegram",
@@ -17,10 +17,12 @@
   "devDependencies": {
     "@types/node": "^20.14.8",
     "nodemon": "^3.1.4",
+    "supabase": "^1.178.2",
     "typescript": "^5.5.2"
   },
   "dependencies": {
     "@grammyjs/files": "^1.1.1",
+    "@supabase/supabase-js": "^2.43.5",
     "airtable": "^0.12.2",
     "dotenv": "^16.4.5",
     "grammy": "^1.25.1",

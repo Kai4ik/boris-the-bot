@@ -21,4 +21,3 @@ Airtable.configure({
 const base = Airtable.base(baseId);
 export const financeCategoriesTable = base.table("Finance Categories");
 export const financesTable = base.table("Finances");
-export const tgMessagesTable = base.table("Telegram Messages");

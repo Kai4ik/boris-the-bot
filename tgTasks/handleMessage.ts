@@ -1,39 +1,18 @@
 import { MyTgContext } from "../types";
-import { tgMessagesTable } from "../db";
-import { FieldSet, Record } from "airtable";
-
+import { supabaseClient } from "../db";
 import moment from "moment-timezone";
-
-const getTgMessageByID = async (
-  id: number
-): Promise<Record<FieldSet> | null> => {
-  let recordForUpdate: Record<FieldSet> | null = null;
-  await tgMessagesTable
-    .select({
-      maxRecords: 1,
-      filterByFormula: `{Message ID} = "${id}"`,
-    })
-    .eachPage((results, fetchNextPage) => {
-      recordForUpdate = results[0];
-      fetchNextPage();
-    })
-    .catch((error) => {
-      console.error(error);
-      return null;
-    });
-  return recordForUpdate;
-};
 
 export const handleMessage = async (ctx: MyTgContext, message_type: string) => {
   const message =
     message_type === "regularMessage" ? ctx.message : ctx.businessMessage;
 
   const messageId = message?.message_id;
+  if (!messageId) throw new Error("Message should have an ID");
   let isMessageReply = false;
 
   // handling message date
   let messageDate = message?.date;
-  let formattedDate = undefined;
+  let formattedDate = "";
   if (messageDate) {
     const torontoTimezone = "America/Toronto";
     const dateFormat = "YYYY-MM-DD hh:mm:ss a z";
@@ -41,31 +20,28 @@ export const handleMessage = async (ctx: MyTgContext, message_type: string) => {
       .tz(torontoTimezone)
       .format(dateFormat);
   }
-  const messateText = message?.text;
+  const messateText = message?.text ?? null;
 
   let replyToMessageID = undefined;
-  let linkToParentMessage = undefined;
 
   if (message?.reply_to_message) {
     isMessageReply = true;
     replyToMessageID = message.reply_to_message.message_id;
-    const ifMessageExistsInDb = await getTgMessageByID(replyToMessageID);
-    if (ifMessageExistsInDb) linkToParentMessage = ifMessageExistsInDb.id;
   }
 
   const sender = ctx.from;
-  const senderFname = sender?.first_name;
-  const senderLname = sender?.last_name;
-  const senderUsername = sender?.username;
-  const senderId = sender?.id;
+  const senderFname = sender?.first_name ?? null;
+  const senderLname = sender?.last_name ?? null;
+  const senderUsername = sender?.username ?? null;
+  const senderId = sender?.id ?? null;
   const senderIsPremium = sender?.is_premium;
   const senderIsBot = sender?.is_bot;
-  const senderLanguage = sender?.language_code;
+  const senderLanguage = sender?.language_code ?? null;
 
   const chat = ctx.chat;
   const chatID = chat?.id;
-  const chatType = chat?.type;
-  const chatTitle = chat?.title;
+  const chatType = chat?.type ?? null;
+  const chatTitle = chat?.title ?? null;
   const isMyMessage = senderId?.toString() === process.env.MY_TG_ID;
 
   // handling media
@@ -78,29 +54,25 @@ export const handleMessage = async (ctx: MyTgContext, message_type: string) => {
     photoUrl = file.getUrl();
   }
 
-  try {
-    await tgMessagesTable.create({
-      "Message ID": messageId,
-      "Message Text": messateText,
-      "Message Date": formattedDate,
-      "Chat ID": chatID,
-      "Chat Type": chatType,
-      "Chat Title": chatTitle,
-      "Sender First Name": senderFname,
-      "Sender Last Name": senderLname,
-      "Sender ID": senderId,
-      "Sender Username": senderUsername,
-      "Is Premium User": senderIsPremium,
-      "Is Bot": senderIsBot,
-      "Sender Language": senderLanguage,
-      "My Message": isMyMessage,
-      "Message Type": isMessageReply ? "Reply" : "Original",
-      "Reply To Message (ID)": replyToMessageID,
-      "Parent Message": linkToParentMessage ? [linkToParentMessage] : [],
-      "Photo URL": photoUrl,
-      Caption: caption,
-    });
-  } catch (err) {
-    console.error(err);
-  }
+  const { error } = await supabaseClient.from("Telegram Messages").insert({
+    "Message ID": messageId,
+    "Message Text": messateText,
+    "Message Date": formattedDate,
+    "Chat ID": chatID,
+    "Chat Type": chatType,
+    "Chat Title": chatTitle,
+    "Sender First Name": senderFname,
+    "Sender Last Name": senderLname,
+    "Sender ID": senderId,
+    "Sender Username": senderUsername,
+    "Is Premium User": senderIsPremium,
+    "Is Bot": senderIsBot,
+    "Sender Language": senderLanguage,
+    "My Message": isMyMessage,
+    "Message Type": isMessageReply ? "Reply" : "Original",
+    "Reply To Message (ID)": replyToMessageID,
+    "Photo URL": photoUrl,
+    Caption: caption,
+  });
+  if (error !== null) console.error(error);
 };
